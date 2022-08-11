@@ -171,12 +171,12 @@ const fillInContacts = () => {
 const db = [
   {
     username: 'john',
-    password: 'secret1',
+    password: '$2a$10$ERtpwFkNW1zj9J2FCdT8I.f2XeHmnkEWSmW433D2XDUfemBty8TuK',
     contacts: fillInContacts()
   },
   {
     username: 'serg',
-    password: 'secret2',
+    password: '$2a$10$JWXRuszJX9EFrhMH0rEw.ecuFtbk2jy.oASp4kURHgcDrPm2Ct8..',
     contacts: fillInContacts()
   },
 
