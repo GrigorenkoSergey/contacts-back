@@ -15,6 +15,7 @@ const createUser = async (req, res) => {
 };
 
 const login = async (req, res) => {
+  console.log(req.body);
   const { login, password } = req.body;
 
   if (!login || !password) {
