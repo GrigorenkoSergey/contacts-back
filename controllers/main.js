@@ -15,15 +15,11 @@ const createUser = async (req, res) => {
 };
 
 const login = async (req, res) => {
-  console.log(req.body);
   const { login, password } = req.body;
 
   if (!login || !password) {
     throw new BadRequestError('Login and password are required!');
   }
-
-  console.log('db:');
-  console.log(db);
 
   const user = db.find(u => u.login === login);
   if (!user) throw new BadRequestError(`Login doesn't exist!`);
