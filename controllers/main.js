@@ -3,6 +3,9 @@ const bcrypt = require('bcryptjs');
 const { BadRequestError } = require('../errors');
 const db = require('../db/mocks');
 
+const MAX_STRING_LENGTH = 150;
+const truncateString = str => str.length > MAX_STRING_LENGTH ? str.slice(0, MAX_STRING_LENGTH) + '...' : str;
+
 // not used yet (only to encode initial passwords)
 const createUser = async (req, res) => {
   const { password } = req.body;
@@ -66,8 +69,14 @@ const createContact = (req, res) => {
 
   const id = Math.max(...contacts.map(c => c.id)) + 1;
 
-  const newContact = { id, name, phone, email, notes };
-  contacts.push(newContact)
+  const newContact = {
+    id,
+    name: truncateStr(name),
+    phone: truncateStr(phone),
+    email: truncateStr(email),
+    notes: truncateStr(notes),
+  };
+  contacts.push(newContact);
   contacts.sort((a, b) => a.name.localeCompare(b.name));
 
   res.status(200).json({ data: newContact });
@@ -93,7 +102,12 @@ const updateContact = (req, res) => {
   const contact = contacts.find(c => c.id === id);
   if (!contact) throw new BadRequestError(`Не существует контакта с данным id: ${id}!`);
 
-  Object.assign(contact, { name, email, phone, notes });
+  Object.assign(contact, {
+    name: truncateString(name),
+    email: truncateString(email),
+    phone: truncateString(phone),
+    notes: truncateString(notes),
+  });
   contacts.sort((a, b) => a.name.localeCompare(b.name));
 
   res.status(200).json({ data: contact });
