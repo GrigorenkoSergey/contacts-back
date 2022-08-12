@@ -17,8 +17,8 @@ const errorHandlerMiddleware = require('./middleware/error-handler');
 app.set('trust proxy', 1);
 app.use(
   rateLimiter({
-    windowMs: 2000, // 2 seconds
-    max: 3, // limit each IP to 3 requests per windowMs
+    windowMs: 20000, // 20 seconds
+    max: 30, // limit each IP to 30 requests per windowMs
   })
 );
 app.use(helmet());
