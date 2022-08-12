@@ -1,3 +1,5 @@
+const MAX_INITIAL_CONTACTS = 50;
+
 const mockPeople = [
   'Абакаров Хизри',
   'Авдеев Михаил',
@@ -161,7 +163,7 @@ const mockContacts = mockPeople.map((p, i) => ({
 
 const fillInContacts = () => {
   const personContacts = new Set();
-  for (let i = 0; i < 50; i++) {
+  for (let i = 0; i <= MAX_INITIAL_CONTACTS; i++) {
     personContacts.add(mockContacts[ randomInteger(0, mockPeople.length - 1) ]);
   }
 
@@ -170,12 +172,14 @@ const fillInContacts = () => {
 
 const db = [
   {
+    id: 1,
     login: 'john',
     fullname: 'Констанин Константинопольский',
     password: '$2a$10$ERtpwFkNW1zj9J2FCdT8I.f2XeHmnkEWSmW433D2XDUfemBty8TuK',
     contacts: fillInContacts()
   },
   {
+    id: 2,
     login: 'serg',
     fullname: 'Нацагийн Багабанди',
     password: '$2a$10$JWXRuszJX9EFrhMH0rEw.ecuFtbk2jy.oASp4kURHgcDrPm2Ct8..',

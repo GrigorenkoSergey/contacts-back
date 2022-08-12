@@ -3,9 +3,9 @@ const bcrypt = require('bcryptjs');
 const { BadRequestError } = require('../errors');
 const db = require('../db/mocks');
 
-// not used yet
+// not used yet (only to encode initial passwords)
 const createUser = async (req, res) => {
-  const { username, password, email } = req.body;
+  const { password } = req.body;
 
   const salt = await bcrypt.genSalt(10);
   const encodedPassword = await bcrypt.hash(password, salt);
@@ -41,17 +41,68 @@ const login = async (req, res) => {
   });
 };
 
-const sendContacts = async (req, res) => {
+const sendContacts = (req, res) => {
   const { user } = req;
   const data = db.find(u => u.login === user.login).contacts;
+  res.status(200).json({ data });
+};
 
-  res.status(200).json({
-    data,
-  });
+const createContact = (req, res) => {
+  const { user } = req;
+  const contacts = db.find(u => u.login === user.login).contacts;
+
+  if (contacts.length > 100) {
+    throw new BadRequestError('Максимум 100 контактов на данном тарифном плане.');
+  }
+
+  const { name, email = '', phone = '', notes = '' } = req.body;
+  const hasDouble = contacts.find(
+    v => v.name === name && (
+      ((v.phone || phone) && v.phone === phone) // compare only if both are non empty strings
+      || ((v.email || email) && v.email === email)
+    )
+  );
+  if (hasDouble) throw new BadRequestError('Дублирование контакта. В создании отказано.');
+
+  let indexToInsert = contacts.findIndex(v => v.name > name);
+  if (indexToInsert === -1) indexToInsert = contacts.length;
+
+  const id = Math.max(...contacts.map(c => c.id)) + 1;
+
+  const newContact = { id, name, phone, email, notes };
+  contacts.splice(indexToInsert, 0, newContact);
+  res.status(200).json({ data: newContact });
+};
+
+const removeContact = (req, res) => {
+  const { user } = req;
+  const contacts = db.find(u => u.login === user.login).contacts;
+
+  const { id } = req.body;
+  const index = contacts.findIndex(c => c.id === id);
+  if (index === -1) throw new BadRequestError(`Нет контакта с данным id: ${id}`);
+
+  contacts.splice(index, 1);
+  res.status(200).json({ data: 'success' });
+};
+
+const updateContact = (req, res) => {
+  const { user } = req;
+  const contacts = db.find(u => u.login === user.login).contacts;
+
+  const { id, name, email = '', phone = '', notes = '' } = req.body;
+  const contact = contacts.find(c => c.id === id);
+  if (!contact) throw new BadRequestError(`Не существует контакта с данным id: ${id}!`);
+
+  Object.assign(contact, { name, email, phone, notes });
+  res.status(200).json({ data: contact });
 };
 
 module.exports = {
   login,
   sendContacts,
   createUser,
+  createContact,
+  removeContact,
+  updateContact,
 };
