@@ -71,10 +71,10 @@ const createContact = (req, res) => {
 
   const newContact = {
     id,
-    name: truncateStr(name),
-    phone: truncateStr(phone),
-    email: truncateStr(email),
-    notes: truncateStr(notes),
+    name: truncateString(name),
+    phone: truncateString(String(phone)),
+    email: truncateString(email),
+    notes: truncateString(notes),
   };
   contacts.push(newContact);
   contacts.sort((a, b) => a.name.localeCompare(b.name));
@@ -105,7 +105,7 @@ const updateContact = (req, res) => {
   Object.assign(contact, {
     name: truncateString(name),
     email: truncateString(email),
-    phone: truncateString(phone),
+    phone: truncateString(String(phone)),
     notes: truncateString(notes),
   });
   contacts.sort((a, b) => a.name.localeCompare(b.name));
