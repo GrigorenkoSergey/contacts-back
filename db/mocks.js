@@ -163,11 +163,11 @@ const mockContacts = mockPeople.map((p, i) => ({
 
 const fillInContacts = () => {
   const personContacts = new Set();
-  for (let i = 0; i <= MAX_INITIAL_CONTACTS; i++) {
+  for (let i = 0; i < MAX_INITIAL_CONTACTS; i++) {
     personContacts.add(mockContacts[ randomInteger(0, mockPeople.length - 1) ]);
   }
 
-  return [ ...personContacts ];
+  return [ ...personContacts ].sort((a, b) => a.name.localeCompare(b.name));
 };
 
 const db = [

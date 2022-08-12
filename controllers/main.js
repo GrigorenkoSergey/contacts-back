@@ -64,13 +64,12 @@ const createContact = (req, res) => {
   );
   if (hasDouble) throw new BadRequestError('Дублирование контакта. В создании отказано.');
 
-  let indexToInsert = contacts.findIndex(v => v.name > name);
-  if (indexToInsert === -1) indexToInsert = contacts.length;
-
   const id = Math.max(...contacts.map(c => c.id)) + 1;
 
   const newContact = { id, name, phone, email, notes };
-  contacts.splice(indexToInsert, 0, newContact);
+  contacts.push(newContact)
+  contacts.sort((a, b) => a.name.localeCompare(b.name));
+
   res.status(200).json({ data: newContact });
 };
 
@@ -95,6 +94,8 @@ const updateContact = (req, res) => {
   if (!contact) throw new BadRequestError(`Не существует контакта с данным id: ${id}!`);
 
   Object.assign(contact, { name, email, phone, notes });
+  contacts.sort((a, b) => a.name.localeCompare(b.name));
+
   res.status(200).json({ data: contact });
 };
 
